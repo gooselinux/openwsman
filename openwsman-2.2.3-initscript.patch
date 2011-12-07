@@ -1,0 +1,36 @@
+diff -up openwsman-2.2.3/etc/init/openwsmand.sh.in_old openwsman-2.2.3/etc/init/openwsmand.sh.in
+--- openwsman-2.2.3/etc/init/openwsmand.sh.in_old	2010-07-12 14:02:55.000000000 +0200
++++ openwsman-2.2.3/etc/init/openwsmand.sh.in	2010-07-12 16:08:20.395500196 +0200
+@@ -17,7 +17,7 @@
+ NAME=openwsmand
+ DAEMON=/usr/sbin/$NAME
+ OPTIONS=-S # with SSL
+-PIDFILE=/var/run/$NAME.pid
++PIDFILE=/var/run/wsmand.pid
+ 
+ lsb=0
+ 
+@@ -105,6 +105,7 @@ case "$1" in
+     stop)
+     	stop
+ 	rm -f $lockfile
++	rm -f $PIDFILE
+     ;;
+ 
+     restart)
+@@ -139,12 +140,15 @@ case "$1" in
+         echo "             running"
+       else
+         echo "             stopped"
++        exit 3
+       fi
+     fi
+     ;;
+ 
+     *)
+     echo "Usage: $0 {restart|start|stop|reload|force-reload|status}"
++    [ "$1" = "usage" ] && exit 0
++    exit 2
+ esac
+ 
+ if [ $lsb -ne 0 ]; then

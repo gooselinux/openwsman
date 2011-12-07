@@ -1,0 +1,11 @@
+--- openwsman-2.2.3/src/lib/wsman-curl-client-transport.c	2010-01-21 17:25:14.000000000 +0530
++++ openwsman-2.2.3_fix1/src/lib/wsman-curl-client-transport.c	2010-03-03 09:50:23.000000000 +0530
+@@ -333,7 +333,7 @@
+ #ifdef ENABLE_EVENTING_SUPPORT
+ /*  Bug in e.g. Fedora: [ curl-Bugs-1924441 ] SSL callback option with NSS-linked libcurl */
+ #ifndef NO_SSL_CALLBACK
+-	else if (cl->authentication.certificatethumbprint && 0 != cl->authentication.verify_peer) {
++	else if (strlen((char *)cl->authentication.certificatethumbprint) > 0 && 0 != cl->authentication.verify_peer) {
+ 		r = curl_easy_setopt(curl, CURLOPT_SSL_CTX_FUNCTION, sslctxfun);
+ 		if(r != 0) {
+ 			curl_err("Could not curl_easy_setopt(curl, CURLOPT_SSL_CTX_FUNCTION)");

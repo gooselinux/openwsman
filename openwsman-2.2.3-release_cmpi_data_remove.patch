@@ -1,0 +1,65 @@
+diff -up openwsman-2.2.3/src/plugins/cim/sfcc-interface.c.orig openwsman-2.2.3/src/plugins/cim/sfcc-interface.c
+--- openwsman-2.2.3/src/plugins/cim/sfcc-interface.c.orig	2010-05-26 13:02:57.727438108 +0200
++++ openwsman-2.2.3/src/plugins/cim/sfcc-interface.c	2010-05-26 13:04:02.979383441 +0200
+@@ -1560,40 +1560,6 @@ cim_release_client(CimClientInfo * cimcl
+ 	}
+ }
+ 
+-void
+-release_cmpi_data(CMPIData data)
+-{
+-        if (data.state == CMPI_nullValue)
+-                return;
+-        debug("release_cmpi_data, type = %d",data.type);
+-        switch(data.type)
+-        {
+-                case CMPI_string:
+-                        debug("release String");
+-                        CMRelease(data.value.string);
+-                        break;
+-                case CMPI_chars:
+-                        debug("free chars");
+-                        free (data.value.chars);
+-                        break;
+-                case CMPI_instance:
+-                        debug("release instance");
+-                        CMRelease(data.value.inst);
+-                        break;
+-                case CMPI_ref:
+-                        debug("release ref");
+-                        CMRelease(data.value.ref);
+-                        break;
+-                case CMPI_dateTime:
+-                        debug("release datetime");
+-                        CMRelease(data.value.dateTime);
+-                        break;
+-                default:
+-                        break;
+-        }
+-}
+-
+-
+ /*
+  * Invoke 'EnumerateClassNames' intrinsic method
+  *
+@@ -1739,8 +1705,6 @@ cim_invoke_method(CimClientInfo * client
+ 					method_node, client->resource_uri, 0, 1);
+ 			}
+ 
+-		        release_cmpi_data(data);
+-
+ 			if (argsout) {
+ 				int count = CMGetArgCount(argsout, NULL);
+ 				int i = 0;
+diff -up openwsman-2.2.3/src/plugins/cim/sfcc-interface.h.orig openwsman-2.2.3/src/plugins/cim/sfcc-interface.h
+--- openwsman-2.2.3/src/plugins/cim/sfcc-interface.h.orig	2010-05-26 13:02:49.698458116 +0200
++++ openwsman-2.2.3/src/plugins/cim/sfcc-interface.h	2010-05-26 13:03:23.151384758 +0200
+@@ -25,8 +25,6 @@ CMCIClient *cim_connect_to_cimom(char *c
+ 
+ void cim_release_client(CimClientInfo * cimclient);
+ 
+-void release_cmpi_data(CMPIData data);
+-
+ void
+ create_instance_from_xml(CMPIInstance * instance,
+ 			 CMPIConstClass * class,
